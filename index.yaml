@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  fastapi:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-11-04T12:06:22.58127503Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: ~16.1.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: ~20.2.1
+    description: Generic FastAPI Helm Chart
+    digest: 5e23d1b4db661662f34806316bdd7cb9083140936a0b827fa90ded8638c72d80
+    name: fastapi
+    type: application
+    urls:
+    - https://github.com/kodatecnologia/arlo-charts/releases/download/fastapi-0.1.0/fastapi-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-11-04T12:06:22.581286852Z"
