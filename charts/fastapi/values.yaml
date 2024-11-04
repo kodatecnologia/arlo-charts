@@ -71,10 +71,9 @@ app:
   jobs: []
     # - name: migrate
     #   command:
-    #     - "python"
-    #     - "manage.py"
-    #     - "migrate"
-    #     - "--noinput"
+    #     - "alembic"
+    #     - "upgrade"
+    #     - "head"
   ingressroute:
     enabled: true
     entrypoints:
