@@ -1,0 +1,41 @@
+{{- if .Values.app.jobs }}
+{{- $simpleName := include "helperfunc.name" . -}}
+{{- $labels := include "helperfunc.labels" . -}}
+---
+{{- if .Values.configMap.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" $simpleName "config" }}-dbmigrations
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+data:
+  {{- range $k, $v := .Values.env }}
+  {{ $k }}: {{ $v | quote }}
+  {{- end }}
+  {{- if .Values.postgresql.enabled }}
+  DATABASE_HOST: {{ include "helperfunc.postgresql.fullname" . | quote }}
+  DATABASE_PORT: {{ .Values.postgresql.service.port | quote }}
+  DATABASE_NAME: {{ include "helperfunc.postgresql.database" . | quote }}
+  DATABASE_USER: {{ .Values.postgresql.postgresqlUsername }}
+  DATABASE_PASSWORD: {{ .Values.postgresql.postgresqlPassword | quote }}
+  {{- else }}
+  DATABASE_HOST: {{ .Values.database.host }}
+  DATABASE_PORT: {{ .Values.database.port | quote }}
+  DATABASE_NAME: {{ .Values.database.name }}
+  DATABASE_USER: {{ .Values.database.user }}
+  DATABASE_PASSWORD: {{ .Values.database.password | quote }}
+  {{- end }}
+  {{- if .Values.redis.enabled }}
+  REDIS_HOST: {{ include "helperfunc.redis.host" . | quote }}
+  REDIS_PORT: {{ include "helperfunc.redis.port" . | quote }}
+  REDIS_PASSWORD: {{ .Values.redis.auth.password | quote }}
+  {{- else }}
+  REDIS_HOST: {{ .Values.redisDb.host }}
+  REDIS_PORT: {{ .Values.redisDb.port | quote }}
+  REDIS_PASSWORD: {{ .Values.redisDb.password | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}

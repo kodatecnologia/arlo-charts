@@ -1,2 +1,2 @@
-# arlo-charts
-Repositorio para o helm chart do Arlo
+# fastapi-charts
+Repositorio para o helm chart para aplicação FastAPI
