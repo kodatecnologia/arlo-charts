@@ -18,11 +18,8 @@ env: {}
 dbless: false
 
 database:
-  host: localhost
-  port: 5432
-  name: default
-  user: postgres
-  password: ""
+  uri: "postgresql://postgres:postgres@db:5432/default"
+  connect_args: "{}"
 
 redisDb:
   host: localhost

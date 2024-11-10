@@ -1,6 +1,6 @@
 apiVersion: v2
-name: fastapi
-description: Generic FastAPI Helm Chart
+name: arlo-fastapi
+description: Arlo FastAPI Helm Chart
 
 # A chart can be either an 'application' or a 'library' chart.
 #

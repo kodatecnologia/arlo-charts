@@ -22,11 +22,10 @@ data:
   DATABASE_USER: {{ .Values.postgresql.postgresqlUsername }}
   DATABASE_PASSWORD: {{ .Values.postgresql.postgresqlPassword | quote }}
   {{- else }}
-  DATABASE_HOST: {{ .Values.database.host }}
+  DATABASE_HOST: {{ .Values.database.host | quote }}
   DATABASE_PORT: {{ .Values.database.port | quote }}
-  DATABASE_NAME: {{ .Values.database.name }}
-  DATABASE_USER: {{ .Values.database.user }}
-  DATABASE_PASSWORD: {{ .Values.database.password | quote }}
+  ARLO_DB__uri: {{ .Values.database.uri | quote }}
+  ARLO_DB__connect_args: {{ .Values.database.connect_args | quote }}
   {{- end }}
   {{- if .Values.redis.enabled }}
   REDIS_HOST: {{ include "helperfunc.redis.host" . | quote }}

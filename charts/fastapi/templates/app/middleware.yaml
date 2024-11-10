@@ -1,3 +1,4 @@
+{{- if .Values.app.ingressroute.enabled }}
 {{- if .Values.app.ingressroute.redirectHttps }}
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
@@ -8,4 +9,5 @@ spec:
     scheme: https
     permanent: true
     port: "443"
+{{- end }}
 {{- end }}
