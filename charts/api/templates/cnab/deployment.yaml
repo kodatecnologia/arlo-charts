@@ -1,0 +1,61 @@
+{{- if .Values.cnab.enabled -}}
+{{- $simpleName := include "helperfunc.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helperfunc.fullname" . }}-cnab
+  labels:
+    {{- include "helperfunc.labels" . | nindent 4 }}
+    app.kubernetes.io/component: app
+spec:
+  selector:
+    matchLabels:
+      {{- include "helperfunc.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: app
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helperfunc.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helperfunc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.cnab_repository }}:{{ .Values.image.cnab_tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.cnab.command }}
+          command: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.configMap }}
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-%s" $simpleName "config" }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
+      {{- with .Values.cnab.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cnab.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cnab.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

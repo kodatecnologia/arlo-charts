@@ -1,0 +1,76 @@
+{{- if .Values.worker.enabled -}}
+{{- $simpleName := include "helperfunc.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helperfunc.fullname" . }}-worker
+  labels:
+    {{- include "helperfunc.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  {{- if not .Values.worker.autoscaling.enabled }}
+  replicas: {{ .Values.worker.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helperfunc.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helperfunc.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: worker
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helperfunc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.api_repository }}:{{ .Values.image.api_tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.worker.command }}
+          command: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.configMap }}
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-%s" $simpleName "config" }}
+          {{- end }}
+          {{- if .Values.worker.liveness.command }}
+          livenessProbe:
+            exec:
+              # bash is needed to replace the environment variable
+              {{- with .Values.worker.liveness.command }}
+              command:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            initialDelaySeconds: 30  # startup takes some time
+            periodSeconds: 60  # default is quite often and celery uses a lot cpu/ram then.
+            timeoutSeconds: 10  # default is too low
+          {{- end }}
+          resources:
+            {{- toYaml .Values.worker.resources | nindent 12 }}
+      {{- with .Values.worker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.worker.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.worker.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

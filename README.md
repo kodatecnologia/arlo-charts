@@ -1,5 +1,5 @@
 # fastapi-charts
-Repositorio para o helm chart para aplicação FastAPI
+Repositorio para o helm chart para aplicações da Koda
 
 Get started
 
@@ -12,5 +12,6 @@ helm repo add arlo-charts https://kodatecnologia.github.io/arlo-charts
 Instalar o Helm chart
 
 ```bash
-helm install ahoy arlo-charts/fastapi
+helm --namespace arlo install arlo-api arlo-charts/fastapi
+helm --namespace arlo install arlo-front arlo-charts/vue
 ```

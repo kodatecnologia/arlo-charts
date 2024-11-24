@@ -1,0 +1,56 @@
+{{- if .Values.worker.enabled -}}
+{{- if .Values.flower.enabled -}}
+{{- $simpleName := include "helperfunc.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helperfunc.fullname" . }}-flower
+  labels:
+    {{- include "helperfunc.labels" . | nindent 4 }}
+    app.kubernetes.io/component: flower
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "helperfunc.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: flower
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helperfunc.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: flower
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helperfunc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.api_repository }}:{{ .Values.image.api_tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.flower.command }}
+          command: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: flower-port
+              containerPort: 5555
+              protocol: TCP
+          {{- if $.Values.configMap }}
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-%s" $simpleName "config" }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.flower.resources | nindent 12 }}
+{{- end }}
+{{- end }}

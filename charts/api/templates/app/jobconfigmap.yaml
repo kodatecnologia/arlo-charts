@@ -18,14 +18,13 @@ data:
   {{- if .Values.postgresql.enabled }}
   DATABASE_HOST: {{ include "helperfunc.postgresql.fullname" . | quote }}
   DATABASE_PORT: {{ .Values.postgresql.service.port | quote }}
-  DATABASE_NAME: {{ include "helperfunc.postgresql.database" . | quote }}
-  DATABASE_USER: {{ .Values.postgresql.postgresqlUsername }}
-  DATABASE_PASSWORD: {{ .Values.postgresql.postgresqlPassword | quote }}
+  ARLO_DB__uri: postgresql://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ include "helperfunc.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ include "helperfunc.postgresql.database" . }}
+  ARLO_DB__connect_args: {{ .Values.database.connect_args | quote }} 
   {{- else }}
   DATABASE_HOST: {{ .Values.database.host | quote }}
   DATABASE_PORT: {{ .Values.database.port | quote }}
-  ARLO_DB__uri: {{ .Values.database.uri | quote }}
-  ARLO_DB__connect_args: {{ .Values.database.connect_args | quote }}
+  ARLO_DB__uri: postgresql://{{ .Values.database.user }}:{{ .Values.database.password }}@{{ .Values.database.host }}:{{ .Values.database.port }}/{{ .Values.database.name }}
+  ARLO_DB__connect_args: {{ .Values.database.connect_args | quote }} 
   {{- end }}
   {{- if .Values.redis.enabled }}
   REDIS_HOST: {{ include "helperfunc.redis.host" . | quote }}

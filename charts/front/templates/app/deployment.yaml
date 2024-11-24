@@ -1,0 +1,79 @@
+{{- $simpleName := include "helperfunc.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helperfunc.fullname" . }}-app
+  labels:
+    {{- include "helperfunc.labels" . | nindent 4 }}
+    app.kubernetes.io/component: app
+spec:
+  {{- if not .Values.app.autoscaling.enabled }}
+  replicas: {{ .Values.app.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helperfunc.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: app
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helperfunc.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helperfunc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.app.command }}
+          command: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: nginx-port
+              containerPort: 80
+              protocol: TCP
+          {{- if $.Values.app.healthcheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.app.healthcheck.path | default "/" }}
+              port: {{ .Values.app.healthcheck.port | default "nginx-port" }}
+            initialDelaySeconds: {{ .Values.app.healthcheck.livenessprobe.initialDelaySeconds | default 15 }}
+            periodSeconds: {{ .Values.app.healthcheck.livenessprobe.periodSeconds | default 10 }}
+            timeoutSeconds: {{ .Values.app.healthcheck.livenessprobe.timeoutSeconds | default 10 }}
+            failureThreshold: {{ .Values.app.healthcheck.livenessprobe.failureThreshold | default 3 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.app.healthcheck.path | default "/" }}
+              port: {{ .Values.app.healthcheck.port | default "nginx-port" }}
+            initialDelaySeconds: {{ .Values.app.healthcheck.readinessprobe.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.app.healthcheck.readinessprobe.periodSeconds | default 20 }}
+            timeoutSeconds: {{ .Values.app.healthcheck.readinessprobe.timeoutSeconds | default 10 }}
+            failureThreshold: {{ .Values.app.healthcheck.readinessprobe.failureThreshold | default 3 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
+      {{- with .Values.app.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.app.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.app.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

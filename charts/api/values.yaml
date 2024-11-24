@@ -3,12 +3,15 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: docker
-  pullPolicy: Always
+  api_repository: docker
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  api_tag: ""
+  cnab_repository: docker
+  # Overrides the image tag whose default is the chart appVersion.
+  cnab_tag: ""
+  pullPolicy: Always
 imagePullSecrets:
-  - name: gitlab-registry-secret
+  - name: ecr-registry-secret
 
 nameOverride: ""
 fullnameOverride: ""
@@ -18,7 +21,11 @@ env: {}
 dbless: false
 
 database:
-  uri: "postgresql://postgres:postgres@db:5432/default"
+  host: localhost
+  port: 5432
+  name: default
+  user: postgres
+  password: postgres
   connect_args: "{}"
 
 redisDb:
@@ -77,7 +84,7 @@ app:
       - web
       - websecure
     hosts: []
-      # - api.kodatec.com.br.br
+      # - api.arlo.com.br
     hostStr: ""
     redirectHttps: true
     annotations: {}
@@ -114,10 +121,100 @@ app:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+cnab:
+  enabled: true
+  command: []
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+worker:
+  enabled: false
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 90
+    targetMemoryUtilizationPercentage: 80
+  command: []
+    # - celery
+    # - -A
+    # - arlo.celery_app.app
+    # - worker
+    # - -l
+    # - info
+  liveness:
+    command: []
+  resources:
+    limits:
+      cpu: 900m
+      memory: 768Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  nodeSelector: { }
+  tolerations: [ ]
+  affinity: { }
+
+beat:
+  enabled: false
+  command: []
+    # - celery
+    # - -A
+    # - arlo.celery_app.app
+    # - beat
+    # - -S
+    # - redbeat.RedBeatScheduler
+    # - --max-interval
+    # - 30
+    # - -l
+    # - info
+
+flower:
+  enabled: false
+  prefix: "/flower"
+  command: []
+    # - celery
+    # - -A
+    # - arlo.celery_app.app
+    # - flower
+    # - broker_api=amqp://usuario:password@host:porta/vhost
+    # - -l
+    # - info
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
 
 redis:
   enabled: false
-  nameOverride: fastapi-redis
+  nameOverride: redis
   auth:
     password: CspeR7s16d
   master:
@@ -131,5 +228,5 @@ redis:
 # Default to disabled, use a managed database service. But can be enabled here.
 postgresql:
   enabled: false
-  nameOverride: fastapi-postgresql
+  nameOverride: postgresql
   postgresqlPassword: G65df98

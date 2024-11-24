@@ -1,0 +1,35 @@
+{{- if .Values.configMap.enabled }}
+{{- $simpleName := include "helperfunc.name" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s" $simpleName "config" }}
+data:
+  {{- range $k, $v := .Values.env }}
+  {{ $k }}: {{ $v | quote }}
+  {{- end }}
+  {{- if .Values.postgresql.enabled }}
+  DATABASE_HOST: {{ include "helperfunc.postgresql.fullname" . | quote }}
+  DATABASE_PORT: {{ .Values.postgresql.service.port | quote }}
+  ARLO_DB__uri: postgresql://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ include "helperfunc.postgresql.fullname" . }}:{{ .Values.postgresql.service.port }}/{{ include "helperfunc.postgresql.database" . }}
+  ARLO_DB__connect_args: {{ .Values.database.connect_args | quote }} 
+  {{- else }}
+  DATABASE_HOST: {{ .Values.database.host | quote }}
+  DATABASE_PORT: {{ .Values.database.port | quote }}
+  ARLO_DB__uri: postgresql://{{ .Values.database.user }}:{{ .Values.database.password }}@{{ .Values.database.host }}:{{ .Values.database.port }}/{{ .Values.database.name }}
+  ARLO_DB__connect_args: {{ .Values.database.connect_args | quote }} 
+  {{- end }}
+  {{- if .Values.redis.enabled }}
+  REDIS_HOST: {{ include "helperfunc.redis.host" . | quote }}
+  REDIS_PORT: {{ include "helperfunc.redis.port" . | quote }}
+  REDIS_PASSWORD: {{ .Values.redis.auth.password | quote }}
+  ARLO_CELERY__CELERY_RESULT_BACKEND: redis://:{{ .Values.redis.auth.password }}@{{ include "helperfunc.redis.host" . }}:{{ include "helperfunc.redis.port" . }}/0
+  ARLO_CELERY__REDBEAT_REDIS_URL: redis://:{{ .Values.redis.auth.password }}@{{ include "helperfunc.redis.host" . }}:{{ include "helperfunc.redis.port" . }}/1
+  {{- else }}
+  REDIS_HOST: {{ .Values.redisDb.host }}
+  REDIS_PORT: {{ .Values.redisDb.port | quote }}
+  REDIS_PASSWORD: {{ .Values.redisDb.password | quote }}
+  ARLO_CELERY__CELERY_RESULT_BACKEND: redis://:{{ .Values.redisDb.password }}@{{ .Values.redisDb.host }}:{{ .Values.redisDb.port }}/0
+  ARLO_CELERY__REDBEAT_REDIS_URL: redis://:{{ .Values.redisDb.password }}@{{ .Values.redisDb.host }}:{{ .Values.redisDb.port }}/1
+  {{- end }}
+{{- end }}

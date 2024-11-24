@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ printf "%s-%s" $simpleName $job.name }}
-        image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
+        image: "{{ $.Values.image.api_repository }}:{{ $.Values.image.api_tag | default $.Chart.AppVersion }}"
         imagePullPolicy: {{ $.Values.image.pullPolicy }}
         {{- with $job.command }}
         command: 

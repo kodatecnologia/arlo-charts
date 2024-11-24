@@ -1,0 +1,61 @@
+{{- if .Values.worker.enabled -}}
+{{- if .Values.beat.enabled -}}
+{{- $simpleName := include "helperfunc.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helperfunc.fullname" . }}-beat
+  labels:
+    {{- include "helperfunc.labels" . | nindent 4 }}
+    app.kubernetes.io/component: beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "helperfunc.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: beat
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helperfunc.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: beat
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helperfunc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.api_repository }}:{{ .Values.image.api_tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.beat.command }}
+          command: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.configMap }}
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-%s" $simpleName "config" }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.beat.resources | nindent 12 }}
+      initContainers:
+        - name: init-db
+          image: busybox:1.34.1
+          command: ['sh', '-c', 'while ! nc -v -z $REDIS_HOST $REDIS_PORT </dev/null; do sleep 5; done']
+          {{- if $.Values.configMap }}
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-%s" $simpleName "config" }}
+          {{- end }}
+{{- end }}
+{{- end }}

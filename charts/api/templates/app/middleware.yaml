@@ -1,0 +1,13 @@
+{{- if .Values.app.ingressroute.enabled }}
+{{- if .Values.app.ingressroute.redirectHttps }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: http-redirect-api
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+    port: "443"
+{{- end }}
+{{- end }}

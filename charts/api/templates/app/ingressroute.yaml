@@ -1,0 +1,30 @@
+{{- if .Values.app.ingressroute.enabled }}
+{{- $simpleName := include "helperfunc.name" . -}}
+{{- $appSvcPort := .Values.app.service.port -}}
+{{- $fullName := include "helperfunc.fullname" . -}}
+{{- $hostslist := include "helperfunc.hostsList" .Values.app.ingressroute.hosts -}}
+{{- range $entrypoint := .Values.app.ingressroute.entrypoints }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ printf "%s-%s" $simpleName $entrypoint }}
+  {{- with $.Values.app.ingressroute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  entryPoints:
+    {{- toYaml (list $entrypoint) | nindent 4 }}
+  routes:
+    - kind: Rule
+      match: {{ $hostslist }}
+      {{- if and (eq "web" $entrypoint) ($.Values.app.ingressroute.redirectHttps) }}
+      middlewares:
+        - name: http-redirect-api
+      {{- end }}
+      services:
+        - name: {{ $fullName }}-app
+          port: {{ $appSvcPort }}
+{{- end }}
+{{- end }}
