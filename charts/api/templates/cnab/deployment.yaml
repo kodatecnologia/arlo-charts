@@ -9,8 +9,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "helperfunc.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: app
+      app.kubernetes.io/component: cnab
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,8 +17,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "helperfunc.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: app
+        app.kubernetes.io/component: cnab
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
