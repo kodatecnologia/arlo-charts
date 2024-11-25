@@ -12,6 +12,6 @@ helm repo add arlo-charts https://kodatecnologia.github.io/arlo-charts
 Instalar o Helm chart
 
 ```bash
-helm --namespace arlo install arlo-api arlo-charts/fastapi
-helm --namespace arlo install arlo-front arlo-charts/vue
+helm --namespace arlo install arlo-api arlo-charts/arlo-api
+helm --namespace arlo install arlo-front arlo-charts/arlo-front
 ```

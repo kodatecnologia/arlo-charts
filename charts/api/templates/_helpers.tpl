@@ -36,7 +36,7 @@ Common labels
 {{- define "helperfunc.labels" -}}
 helm.sh/chart: {{ include "helperfunc.chart" . }}
 {{ include "helperfunc.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.image.tag | quote }}
+app.kubernetes.io/version: {{ .Values.image.api_tag | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
