@@ -41,8 +41,20 @@ spec:
             - configMapRef:
                 name: {{ printf "%s-%s" $simpleName "config" }}
           {{- end }}
+          volumeMounts:
+            - name: rclone-config
+              mountPath: "/root/.config/rclone/rclone.conf"
+              subPath: rclone.conf
+              readOnly: true
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
+      volumes:
+        - name: rclone-config
+          secret:
+            secretName: rclone-config
+            items:
+              - key: rclone.conf
+                path: rclone.conf
       {{- with .Values.cnab.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
