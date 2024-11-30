@@ -46,6 +46,10 @@ spec:
               mountPath: "/root/.config/rclone/rclone.conf"
               subPath: rclone.conf
               readOnly: true
+            - name: rclone-cnab-cron
+              mountPath: "/etc/cron.d/rclone_cnab_cron"
+              subPath: rclone_cnab_cron
+              readOnly: true
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
       volumes:
@@ -55,6 +59,8 @@ spec:
             items:
               - key: rclone.conf
                 path: rclone.conf
+              - key: rclone_cnab_cron
+                path: rclone_cnab_cron
       {{- with .Values.cnab.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
