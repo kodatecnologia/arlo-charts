@@ -46,8 +46,8 @@ spec:
               mountPath: "/root/.config/rclone/rclone.conf"
               subPath: rclone.conf
               readOnly: true
-            - name: rclone-cnab-cron
-              mountPath: "/etc/cron.d/rclone_cnab_cron"
+            - name: rclone-config
+              mountPath: "/etc/cron.d/rclone_cnab"
               subPath: rclone_cnab_cron
               readOnly: true
           resources:
