@@ -50,6 +50,12 @@ spec:
               mountPath: "/etc/cron.d/rclone_cnab"
               subPath: rclone_cnab_cron
               readOnly: true
+          {{- if .Values.cnab.skyunix.enabled }}
+            - name: skyunix-config
+              mountPath: "/usr/local/skyunix/tcm.ini"
+              subPath: skyunix.conf
+              readOnly: true
+          {{- end}}
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
       volumes:
@@ -61,6 +67,14 @@ spec:
                 path: rclone.conf
               - key: rclone_cnab_cron
                 path: rclone_cnab_cron
+      {{- if .Values.cnab.skyunix.enabled }}
+        - name: skyunix-config
+          secret:
+            secretName: skyunix-config
+            items:
+              - key: skyunix.conf
+                path: skyunix.conf
+      {{- end}}
       {{- with .Values.cnab.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -124,6 +124,8 @@ app:
 cnab:
   enabled: true
   command: []
+  skyunix:
+    enabled: false
   s3_provider: AWS
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
