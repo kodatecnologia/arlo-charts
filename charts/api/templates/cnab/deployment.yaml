@@ -55,6 +55,10 @@ spec:
               mountPath: "/usr/local/skyunix/tcm.ini"
               subPath: skyunix.conf
               readOnly: true
+          {{- if .Values.cnab.skyunix.storage.enabled }}
+            - name: {{ .Values.cnab.skyunix.storage.volumeName }}
+              mountPath: "/usr/local/skyunix/storage"
+          {{- end }}
           {{- end}}
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
@@ -74,6 +78,11 @@ spec:
             items:
               - key: skyunix.conf
                 path: skyunix.conf
+      {{- if .Values.cnab.skyunix.storage.enabled }}
+        - name: {{ .Values.cnab.skyunix.storage.volumeName }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-cnab-skyunix
+      {{- end }}
       {{- end}}
       {{- with .Values.cnab.nodeSelector }}
       nodeSelector:

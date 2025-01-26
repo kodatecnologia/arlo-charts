@@ -1,0 +1,16 @@
+{{- if .Values.cnab.skyunix.enabled }}
+{{- if .Values.cnab.skyunix.storage.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-cnab-skyunix
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.cnab.skyunix.storage.storageSize }}
+  storageClassName: {{ .Values.cnab.skyunix.storage.storageClassName }}
+{{- end }}
+{{- end }}
+
