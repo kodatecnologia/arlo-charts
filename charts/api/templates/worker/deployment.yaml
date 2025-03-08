@@ -61,6 +61,20 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.worker.resources | nindent 12 }}
+      {{- if .Values.certificados.enabled }}
+      volumes:
+        - name: certificados
+          mountPath: {{ .Values.certificados.volumeMountPath }}
+          secret:
+            secretName: {{ .Values.certificados.secretName }}
+            items:
+              - key: {{ .Values.certificados.acName }}
+                path: {{ .Values.certificados.acName }}
+              - key: {{ .Values.certificados.certificadoName }}
+                path: {{ .Values.certificados.certificadoName }}
+              - key: {{ .Values.certificados.chavePrivadaName }}
+                path: {{ .Values.certificados.chavePrivadaName }}
+      {{- end }}
       {{- with .Values.worker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
