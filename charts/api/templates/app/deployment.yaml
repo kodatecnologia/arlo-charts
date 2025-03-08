@@ -81,6 +81,20 @@ spec:
                 name: {{ printf "%s-%s" $simpleName "config" }}
           {{- end }}
       {{- end }}
+      {{- if .Values.certificados.enabled }}
+      volumes:
+        - name: certificados
+          mountPath: {{ .Values.certificados.volumeMountPath }}
+          secret:
+            secretName: {{ .Values.certificados.secretName }}
+            items:
+              - key: {{ .Values.certificados.acName }}
+                path: {{ .Values.certificados.acName }}
+              - key: {{ .Values.certificados.certificadoName }}
+                path: {{ .Values.certificados.certificadoName }}
+              - key: {{ .Values.certificados.chavePrivadaName }}
+                path: {{ .Values.certificados.chavePrivadaName }}
+      {{- end }}
       {{- with .Values.app.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
