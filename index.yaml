@@ -3,6 +3,25 @@ entries:
   arlo-api:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-03-09T00:02:55.75475487Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: ~16.1.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: ~20.2.1
+    description: Arlo FastAPI Helm Chart
+    digest: c8fb168cc962ce6b0379e7e5ac86a709f1ed84d1407ac1311e0fbda443ed3b57
+    name: arlo-api
+    type: application
+    urls:
+    - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-api-0.6.4/arlo-api-0.6.4.tgz
+    version: 0.6.4
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-03-08T23:53:52.491207656Z"
     dependencies:
     - condition: postgresql.enabled
@@ -240,4 +259,4 @@ entries:
     urls:
     - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-front-0.1.0/arlo-front-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-08T23:53:52.491275523Z"
+generated: "2025-03-09T00:02:55.75486144Z"
