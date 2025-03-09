@@ -50,6 +50,21 @@ spec:
             - configMapRef:
                 name: {{ printf "%s-%s" $simpleName "config" }}
           {{- end }}
+          {{- if .Values.certificados.enabled }}
+          volumeMounts:
+            - name: certificados
+              mountPath: {{ .Values.certificados.volumeMountPath }}
+              subPath: {{ .Values.certificados.acName }}
+              readOnly: true
+            - name: certificados
+              mountPath: {{ .Values.certificados.volumeMountPath }}
+              subPath: {{ .Values.certificados.certificadoName }}
+              readOnly: true
+            - name: certificados
+              mountPath: {{ .Values.certificados.volumeMountPath }}
+              subPath: {{ .Values.certificados.chavePrivadaName }}
+              readOnly: true
+          {{- end }}
           {{- if $.Values.app.healthcheck.enabled }}
           livenessProbe:
             httpGet:
