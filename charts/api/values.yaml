@@ -39,7 +39,7 @@ configMap:
 certificados:
   enabled: false
   secretName: "arlo-certs"
-  volumeMountPath: "/code/arlo/financeiro"
+  volumeMountPath: "/code/arlo/financeiro/certs"
   acName: "ac.pem"
   certificadoName: "certificado.pem"
   chavePrivadaName: "certificado.key"
