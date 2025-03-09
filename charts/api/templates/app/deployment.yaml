@@ -53,15 +53,15 @@ spec:
           {{- if .Values.certificados.enabled }}
           volumeMounts:
             - name: certificados
-              mountPath: {{ .Values.certificados.volumeMountPath }}
+              mountPath: {{ .Values.certificados.volumeMountPath }}/{{ .Values.certificados.acName }}
               subPath: {{ .Values.certificados.acName }}
               readOnly: true
             - name: certificados
-              mountPath: {{ .Values.certificados.volumeMountPath }}
+              mountPath: {{ .Values.certificados.volumeMountPath }}/{{ .Values.certificados.certificadoName }}
               subPath: {{ .Values.certificados.certificadoName }}
               readOnly: true
             - name: certificados
-              mountPath: {{ .Values.certificados.volumeMountPath }}
+              mountPath: {{ .Values.certificados.volumeMountPath }}/{{ .Values.certificados.chavePrivadaName }}
               subPath: {{ .Values.certificados.chavePrivadaName }}
               readOnly: true
           {{- end }}
