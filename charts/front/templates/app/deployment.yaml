@@ -45,9 +45,9 @@ spec:
             - name: nginx-port
               containerPort: 80
               protocol: TCP
-          envFrom:
-            - configMapRef:
-                name: {{ printf "%s-%s" $simpleName "config" }}
+          volumeMounts:
+            - name: {{ printf "%s-%s" $simpleName "build-dir" }}
+              mountPath: /app
           {{- if $.Values.app.healthcheck.enabled }}
           livenessProbe:
             httpGet:
@@ -68,6 +68,20 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
+      initContainers:
+        - name: {{ printf "%s-%s" $simpleName "build" }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "sh"
+            - "-c"
+            - "npx vite build --mode main && cp -r /dist/. /out/" 
+          envFrom:
+            - configMapRef:
+              name: {{ printf "%s-%s" $simpleName "config" }}
+          volumeMounts:
+            - name: {{ printf "%s-%s" $simpleName "build-dir" }}
+              mountPath: "/out"
       {{- with .Values.app.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
