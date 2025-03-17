@@ -76,9 +76,6 @@ spec:
             - "sh"
             - "-c"
             - "npx vite build --mode main && cp -r /dist/. /out/" 
-          envFrom:
-            - configMapRef:
-              name: {{ printf "%s-%s" $simpleName "config" }}
           volumeMounts:
             - name: {{ printf "%s-%s" $simpleName "build-dir" }}
               mountPath: "/out"
