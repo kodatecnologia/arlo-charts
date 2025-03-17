@@ -79,9 +79,16 @@ spec:
           volumeMounts:
             - name: {{ printf "%s-%s" $simpleName "build-dir" }}
               mountPath: "/out"
+            - name: {{ printf "%s-%s" $simpleName "config-volume" }}
+              mountPath: /app/.env.main
+              readOnly: true
       volumes:
         - name: {{ printf "%s-%s" $simpleName "build-dir" }}
           emptyDir: {}
+        - name: {{ printf "%s-%s" $simpleName "config-volume" }}
+          configMap:        
+            name: {{ printf "%s-%s" $simpleName "config" }}
+            defaultMode: 420
       {{- with .Values.app.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
