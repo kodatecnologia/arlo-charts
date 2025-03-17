@@ -45,6 +45,9 @@ spec:
             - name: nginx-port
               containerPort: 80
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-%s" $simpleName "config" }}
           {{- if $.Values.app.healthcheck.enabled }}
           livenessProbe:
             httpGet:
