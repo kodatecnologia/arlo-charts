@@ -75,7 +75,7 @@ spec:
           command:
             - "sh"
             - "-c"
-            - "npx vite build --mode main && cp -r /dist/. /out/" 
+            - "npx vite build --mode main && cp -r dist/. /out/" 
           volumeMounts:
             - name: {{ printf "%s-%s" $simpleName "build-dir" }}
               mountPath: "/out"
