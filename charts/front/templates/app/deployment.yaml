@@ -45,15 +45,12 @@ spec:
             - name: nginx-port
               containerPort: 80
               protocol: TCP
-          envFrom:
-            - configMapRef:
-                name: {{ printf "%s-%s" $simpleName "config" }}
           volumeMounts:
             - name: {{ printf "%s-%s" $simpleName "build-dir" }}
-              mountPath: /usr/share/nginx/html
-            - name: {{ printf "%s-%s" $simpleName "config-volume" }}
-              mountPath: /app/.env.main
+              mountPath: /app
+            - mountPath: /etc/nginx 
               readOnly: true
+              name: nginx-conf
           {{- if $.Values.app.healthcheck.enabled }}
           livenessProbe:
             httpGet:
@@ -88,16 +85,15 @@ spec:
           volumeMounts:
             - name: {{ printf "%s-%s" $simpleName "build-dir" }}
               mountPath: "/out"
-            - name: {{ printf "%s-%s" $simpleName "config-volume" }}
-              mountPath: /app/.env.main
-              readOnly: true
       volumes:
         - name: {{ printf "%s-%s" $simpleName "build-dir" }}
           emptyDir: {}
-        - name: {{ printf "%s-%s" $simpleName "config-volume" }}
-          configMap:        
-            name: {{ printf "%s-%s" $simpleName "config" }}
-            defaultMode: 420
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
       {{- with .Values.app.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
