@@ -48,9 +48,10 @@ spec:
           volumeMounts:
             - name: {{ printf "%s-%s" $simpleName "build-dir" }}
               mountPath: /app
-            - mountPath: /etc/nginx 
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf 
               readOnly: true
-              name: nginx-conf
           {{- if $.Values.app.healthcheck.enabled }}
           livenessProbe:
             httpGet:
