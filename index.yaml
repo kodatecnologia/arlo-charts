@@ -289,6 +289,16 @@ entries:
   arlo-front:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-03-18T01:09:06.087141347Z"
+    description: Arlo Vue Helm Chart
+    digest: 3f69577ea65e0ad33bf3c8c30d8560bac1352abdfd5eb1ed7ba67aa4196c45cc
+    name: arlo-front
+    type: application
+    urls:
+    - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-front-0.3.8/arlo-front-0.3.8.tgz
+    version: 0.3.8
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-03-18T00:45:42.827646386Z"
     description: Arlo Vue Helm Chart
     digest: 9047d3c26c9abd7997c1ff7b59e9331b69c3d0bd9674d6bddfa5abb9fc03380b
@@ -387,4 +397,4 @@ entries:
     urls:
     - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-front-0.1.0/arlo-front-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-18T00:45:42.827713Z"
+generated: "2025-03-18T01:09:06.087234861Z"
