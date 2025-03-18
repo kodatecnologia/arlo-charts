@@ -48,6 +48,9 @@ spec:
           volumeMounts:
             - name: {{ printf "%s-%s" $simpleName "build-dir" }}
               mountPath: /usr/share/nginx/html
+            - name: {{ printf "%s-%s" $simpleName "config-volume" }}
+              mountPath: /app/.env.main
+              readOnly: true
           {{- if $.Values.app.healthcheck.enabled }}
           livenessProbe:
             httpGet:
