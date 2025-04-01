@@ -50,19 +50,19 @@ spec:
             - configMapRef:
                 name: {{ printf "%s-%s" $simpleName "config" }}
           {{- end }}
-          {{- if .Values.certificados.enabled }}
+          {{- if .Values.certificadosApiBB.enabled }}
           volumeMounts:
             - name: certificados
-              mountPath: {{ .Values.certificados.volumeMountPath }}/{{ .Values.certificados.acName }}
-              subPath: {{ .Values.certificados.acName }}
+              mountPath: {{ .Values.certificadosApiBB.volumeMountPath }}/{{ .Values.certificadosApiBB.acName }}
+              subPath: {{ .Values.certificadosApiBB.acName }}
               readOnly: true
             - name: certificados
-              mountPath: {{ .Values.certificados.volumeMountPath }}/{{ .Values.certificados.certificadoName }}
-              subPath: {{ .Values.certificados.certificadoName }}
+              mountPath: {{ .Values.certificadosApiBB.volumeMountPath }}/{{ .Values.certificadosApiBB.certificadoName }}
+              subPath: {{ .Values.certificadosApiBB.certificadoName }}
               readOnly: true
             - name: certificados
-              mountPath: {{ .Values.certificados.volumeMountPath }}/{{ .Values.certificados.chavePrivadaName }}
-              subPath: {{ .Values.certificados.chavePrivadaName }}
+              mountPath: {{ .Values.certificadosApiBB.volumeMountPath }}/{{ .Values.certificadosApiBB.chavePrivadaName }}
+              subPath: {{ .Values.certificadosApiBB.chavePrivadaName }}
               readOnly: true
           {{- end }}
           {{- if $.Values.app.healthcheck.enabled }}
@@ -96,19 +96,19 @@ spec:
                 name: {{ printf "%s-%s" $simpleName "config" }}
           {{- end }}
       {{- end }}
-      {{- if .Values.certificados.enabled }}
+      {{- if .Values.certificadosApiBB.enabled }}
       volumes:
         - name: certificados
-          mountPath: {{ .Values.certificados.volumeMountPath }}
+          mountPath: {{ .Values.certificadosApiBB.volumeMountPath }}
           secret:
-            secretName: {{ .Values.certificados.secretName }}
+            secretName: {{ .Values.certificadosApiBB.secretName }}
             items:
-              - key: {{ .Values.certificados.acName }}
-                path: {{ .Values.certificados.acName }}
-              - key: {{ .Values.certificados.certificadoName }}
-                path: {{ .Values.certificados.certificadoName }}
-              - key: {{ .Values.certificados.chavePrivadaName }}
-                path: {{ .Values.certificados.chavePrivadaName }}
+              - key: {{ .Values.certificadosApiBB.acName }}
+                path: {{ .Values.certificadosApiBB.acName }}
+              - key: {{ .Values.certificadosApiBB.certificadoName }}
+                path: {{ .Values.certificadosApiBB.certificadoName }}
+              - key: {{ .Values.certificadosApiBB.chavePrivadaName }}
+                path: {{ .Values.certificadosApiBB.chavePrivadaName }}
       {{- end }}
       {{- with .Values.app.nodeSelector }}
       nodeSelector:
