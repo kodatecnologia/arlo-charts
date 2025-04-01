@@ -36,10 +36,10 @@ redisDb:
 configMap:
   enabled: true
 
-certificados:
+certificadosApiBB:
   enabled: false
   secretName: "arlo-certs"
-  volumeMountPath: "/code/arlo/financeiro/certs"
+  volumeMountPath: "/code/arlo/certs/apibb/"
   acName: "ac.pem"
   certificadoName: "certificado.pem"
   chavePrivadaName: "certificado.key"
