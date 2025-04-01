@@ -38,7 +38,7 @@ configMap:
 
 certificadosApiBB:
   enabled: false
-  secretName: "arlo-certs"
+  secretName: "arlo-api-bb-certs-secret"
   volumeMountPath: "/code/arlo/certs/apibb/"
   acName: "ac.pem"
   certificadoName: "certificado.pem"
