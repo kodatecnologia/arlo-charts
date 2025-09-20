@@ -14,4 +14,5 @@ Instalar o Helm chart
 ```bash
 helm --namespace arlo install arlo-api arlo-charts/arlo-api
 helm --namespace arlo install arlo-front arlo-charts/arlo-front
+helm --namespace arlo install arlo-portal arlo-charts/arlo-portal
 ```
