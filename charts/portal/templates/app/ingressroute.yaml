@@ -21,7 +21,7 @@ spec:
       match: {{ $hostslist }}
       {{- if and (eq "web" $entrypoint) ($.Values.app.ingressroute.redirectHttps) }}
       middlewares:
-        - name: http-redirect-api
+        - name: http-redirect-portal
       {{- end }}
       services:
         - name: {{ $fullName }}-app
