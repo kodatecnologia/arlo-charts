@@ -517,6 +517,16 @@ entries:
   arlo-portal:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-09-21T01:57:48.988563153Z"
+    description: Arlo Portal Helm Chart
+    digest: a7452e4c35d88bee15c07b6f6cb72a814286dcad026f2c46aa8eb724643c0478
+    name: arlo-portal
+    type: application
+    urls:
+    - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-portal-0.3.0/arlo-portal-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-09-20T23:15:00.2542529Z"
     description: Arlo Portal Helm Chart
     digest: 4ce2c38d1da214cf7ac23720bc75bf50ae18bb1a57cf39530858662ef4a8fd43
@@ -535,4 +545,4 @@ entries:
     urls:
     - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-portal-0.1.0/arlo-portal-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-20T23:15:00.254364039Z"
+generated: "2025-09-21T01:57:48.988657097Z"
