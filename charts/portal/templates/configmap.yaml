@@ -6,6 +6,6 @@ metadata:
   name: {{ printf "%s-%s" $simpleName "config" }}
 data:
   {{- range $k, $v := .Values.env }}
-  {{ $k }}: {{ $v | quote }}
+  {{ $k }}: {{ if kindIs "slice" $v }}{{ $v | toJson | quote }}{{ else }}{{ $v | quote }}{{ end }}
   {{- end }}
 {{- end }}
