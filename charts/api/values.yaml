@@ -137,8 +137,10 @@ cnab:
     storage:
       enabled: false
       storageSize: 2Gi
-      storageClassName: nfs
-      volumeName: nfs-data
+      storageClassName: default
+      accessModes:
+        - ReadWriteOnce
+      volumeName: cnab-data
   s3_provider: AWS
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious

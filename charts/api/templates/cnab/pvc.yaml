@@ -5,8 +5,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-cnab-skyunix
 spec:
-  accessModes:
-  - ReadWriteMany
+  {{- with .Values.cnab.skyunix.storage.accessModes }}
+  accessModes: 
+    {{- toYaml . | nindent 12 }}
+  {{- end }}
   resources:
     requests:
       storage: {{ .Values.cnab.skyunix.storage.storageSize }}
