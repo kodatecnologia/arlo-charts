@@ -232,6 +232,8 @@ flower:
 
 redis:
   enabled: false
+  image:
+    repository: "bitnamilegacy/redis"
   nameOverride: redis
   auth:
     password: CspeR7s16d
