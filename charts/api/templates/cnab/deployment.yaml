@@ -7,6 +7,10 @@ metadata:
   labels:
     app.kubernetes.io/component: cnab
 spec:
+  {{- if .Values.cnab.skyunix.storage.enabled }}
+  strategy:
+    type: Recreate
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/component: cnab
