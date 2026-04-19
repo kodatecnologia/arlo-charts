@@ -35,7 +35,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "nginx:latest"
+          image: "{{ .Values.image.api_repository }}:{{ .Values.image.api_tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.app.command }}
           command: 
@@ -46,11 +46,9 @@ spec:
               containerPort: 80
               protocol: TCP
           volumeMounts:
-            - name: {{ printf "%s-%s" $simpleName "build-dir" }}
-              mountPath: /app
-            - name: nginx-conf
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf 
+            - name: config-js
+              mountPath: /usr/share/nginx/html/config.js
+              subPath: config.js
               readOnly: true
           {{- if $.Values.app.healthcheck.enabled }}
           livenessProbe:
@@ -72,26 +70,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
-      initContainers:
-        - name: {{ printf "%s-%s" $simpleName "build" }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - "sh"
-            - "-c"
-            - "npx vite build --mode main && cp -r dist/. /out/" 
-          envFrom:
-            - configMapRef:
-                name: {{ printf "%s-%s" $simpleName "config" }}
-          volumeMounts:
-            - name: {{ printf "%s-%s" $simpleName "build-dir" }}
-              mountPath: "/out"
       volumes:
-        - name: {{ printf "%s-%s" $simpleName "build-dir" }}
-          emptyDir: {}
-        - name: nginx-conf
-          configMap:
-            name: nginx-conf
+        - name: config-js
+          secret:
+            secretName: config-js
       {{- with .Values.app.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
