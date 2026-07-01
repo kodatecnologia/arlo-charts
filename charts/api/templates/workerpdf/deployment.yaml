@@ -1,0 +1,105 @@
+{{- if .Values.workerpdf.enabled -}}
+{{- $simpleName := include "helperfunc.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helperfunc.fullname" . }}-workerpdf
+  labels:
+    {{- include "helperfunc.labels" . | nindent 4 }}
+    app.kubernetes.io/component: workerpdf
+spec:
+  {{- if not .Values.workerpdf.autoscaling.enabled }}
+  replicas: {{ .Values.workerpdf.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helperfunc.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: workerpdf
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helperfunc.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: workerpdf
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helperfunc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.api_repository }}:{{ .Values.image.api_tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.workerpdf.command }}
+          command: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.configMap }}
+          envFrom:
+            - configMapRef:
+                name: {{ printf "%s-%s" $simpleName "config" }}
+          {{- end }}
+          {{- if .Values.certificadosApiBB.enabled }}
+          volumeMounts:
+            - name: certificados
+              mountPath: {{ .Values.certificadosApiBB.volumeMountPath }}/{{ .Values.certificadosApiBB.acName }}
+              subPath: {{ .Values.certificadosApiBB.acName }}
+              readOnly: true
+            - name: certificados
+              mountPath: {{ .Values.certificadosApiBB.volumeMountPath }}/{{ .Values.certificadosApiBB.certificadoName }}
+              subPath: {{ .Values.certificadosApiBB.certificadoName }}
+              readOnly: true
+            - name: certificados
+              mountPath: {{ .Values.certificadosApiBB.volumeMountPath }}/{{ .Values.certificadosApiBB.chavePrivadaName }}
+              subPath: {{ .Values.certificadosApiBB.chavePrivadaName }}
+              readOnly: true
+          {{- end }}
+          {{- if .Values.workerpdf.liveness.command }}
+          livenessProbe:
+            exec:
+              # bash is needed to replace the environment variable
+              {{- with .Values.workerpdf.liveness.command }}
+              command:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+            initialDelaySeconds: 30  # startup takes some time
+            periodSeconds: 60  # default is quite often and celery uses a lot cpu/ram then.
+            timeoutSeconds: 10  # default is too low
+          {{- end }}
+          resources:
+            {{- toYaml .Values.workerpdf.resources | nindent 12 }}
+      {{- if .Values.certificadosApiBB.enabled }}
+      volumes:
+        - name: certificados
+          mountPath: {{ .Values.certificadosApiBB.volumeMountPath }}
+          secret:
+            secretName: {{ .Values.certificadosApiBB.secretName }}
+            items:
+              - key: {{ .Values.certificadosApiBB.acName }}
+                path: {{ .Values.certificadosApiBB.acName }}
+              - key: {{ .Values.certificadosApiBB.certificadoName }}
+                path: {{ .Values.certificadosApiBB.certificadoName }}
+              - key: {{ .Values.certificadosApiBB.chavePrivadaName }}
+                path: {{ .Values.certificadosApiBB.chavePrivadaName }}
+      {{- end }}
+      {{- with .Values.workerpdf.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.workerpdf.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.workerpdf.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

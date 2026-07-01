@@ -1,0 +1,28 @@
+{{- if .Values.workerpdf.autoscaling.enabled -}}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "helperfunc.fullname" . }}-workerpdf
+  labels:
+    {{- include "helperfunc.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "helperfunc.fullname" . }}-workerpdf
+  minReplicas: {{ .Values.workerpdf.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.workerpdf.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.workerpdf.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.workerpdf.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.workerpdf.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.workerpdf.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

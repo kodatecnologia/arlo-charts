@@ -185,6 +185,35 @@ worker:
   tolerations: [ ]
   affinity: { }
 
+workerpdf:
+  enabled: false
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 90
+    targetMemoryUtilizationPercentage: 80
+  command: []
+    # - celery
+    # - -A
+    # - arlo.celery_app.app
+    # - worker
+    # - -l
+    # - info
+  liveness:
+    command: []
+  resources:
+    limits:
+      cpu: 900m
+      memory: 2Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  nodeSelector: { }
+  tolerations: [ ]
+  affinity: { }
+
 beat:
   enabled: false
   command: []
@@ -213,14 +242,6 @@ flower:
   service:
     type: ClusterIP
     port: 80
-
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 64Mi
 
   resources:
     limits:
