@@ -3,6 +3,25 @@ entries:
   arlo-api:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2026-07-15T02:46:48.351928572Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: ~16.1.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: ~20.2.1
+    description: Arlo FastAPI Helm Chart
+    digest: 5255a61c5a63150f29c13b50a243da4448b4a35da518dc7500434272654dea24
+    name: arlo-api
+    type: application
+    urls:
+    - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-api-0.10.0/arlo-api-0.10.0.tgz
+    version: 0.10.0
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2026-07-01T13:26:41.122408719Z"
     dependencies:
     - condition: postgresql.enabled
@@ -441,6 +460,16 @@ entries:
   arlo-front:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2026-07-15T02:46:48.578648208Z"
+    description: Arlo Vue Helm Chart
+    digest: f6ac89727ff11a3c2b61859e1a783f0631fd1240aecb47cd4015ea5fedda7c74
+    name: arlo-front
+    type: application
+    urls:
+    - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-front-0.50.0/arlo-front-0.50.0.tgz
+    version: 0.50.0
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2026-04-19T18:46:33.77523119Z"
     description: Arlo Vue Helm Chart
     digest: 9e0030f896897ee561e8944fab85552e48f43e8fb6e7bbe91a33846741dfc65f
@@ -660,4 +689,4 @@ entries:
     urls:
     - https://github.com/kodatecnologia/arlo-charts/releases/download/arlo-portal-0.1.0/arlo-portal-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-01T13:26:41.122607494Z"
+generated: "2026-07-15T02:46:48.578959829Z"
