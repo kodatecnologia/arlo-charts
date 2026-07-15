@@ -50,7 +50,7 @@ spec:
           {{- end }}
           volumeMounts:
             - name: rclone-config
-              mountPath: "/root/.config/rclone/rclone.conf"
+              mountPath: "/home/app/.config/rclone/rclone.conf"
               subPath: rclone.conf
               readOnly: true
             - name: rclone-config
