@@ -51,8 +51,8 @@ spec:
               subPath: rclone.conf
               readOnly: true
             - name: rclone-config
-              mountPath: "/etc/cron.d/rclone_cnab"
-              subPath: rclone_cnab_cron
+              mountPath: "/etc/supercronic/rclone_cnab"
+              subPath: rclone_cnab_supercronic
               readOnly: true
           {{- if .Values.cnab.skyunix.enabled }}
             - name: skyunix-config
@@ -73,8 +73,8 @@ spec:
             items:
               - key: rclone.conf
                 path: rclone.conf
-              - key: rclone_cnab_cron
-                path: rclone_cnab_cron
+              - key: rclone_cnab_supercronic
+                path: rclone_cnab_supercronic
       {{- if .Values.cnab.skyunix.enabled }}
         - name: skyunix-config
           secret:
